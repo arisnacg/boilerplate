@@ -15,13 +15,13 @@ docker exec -it mongo1 mongosh -u root -p root
 ```
 
 Initiate the replica set with all nodes
-```
+```javascript
 rs.initiate({
   _id: "rs0",
   members: [
-    { _id: 0, host: "mongo1:27017" },
-    { _id: 1, host: "mongo2:27017" },
-    { _id: 2, host: "mongo3:27017" }
+    { _id: 0, host: "mongo1:27017", priority: 2 },
+    { _id: 1, host: "mongo2:27017", priority: 1 },
+    { _id: 2, host: "mongo3:27017", priority: 1 }
   ]
 })
 ```
@@ -66,6 +66,6 @@ db.getUsers()
 
 The connection string for the replica set
 ```
-mongodb://clusterAdmin:clusterPass@mongo1:27017,mongo2:27017,mongo3:27017/?replicaSet=rs0
-mongodb://clusterReadAdmin:clusterReadPass@mongo1:27017,mongo2:27017,mongo3:27017/?replicaSet=rs0
+mongodb://clusterAdmin:clusterPass@localhost:27017,localhost:27018,localhost:27019/?replicaSet=rs0
+mongodb://clusterReadAdmin:clusterReadPass@localhost:27017,localhost:27018,localhost:27019/?replicaSet=rs0&readPreference=secondary
 ```
