@@ -1,0 +1,4 @@
+# MongoDB docker volumes
+mongodb/*/data/
+# Apple Mac OS X hidden files
+.DS_Store
