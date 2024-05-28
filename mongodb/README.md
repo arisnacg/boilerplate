@@ -1,16 +1,16 @@
 Create MongoDB keyfile
-```
+```sh
 openssl rand -base64 756 > mongodb-keyfile
 chmod 400 mongodb-keyfile
 ```
 
 Start the MongoDB containers
-```
+```sh
 docker compose up -d
 ```
 
 Login to the mongo1 (primary)
-```
+```sh
 docker exec -it mongo1 mongosh -u root -p root
 ```
 
@@ -27,19 +27,19 @@ rs.initiate({
 ```
 
 Or initiate the primary node first and add the secondary nodes one by one
-```
+```javascript
 rs.initiate()
 rs.add("mongo2:27017")
 rs.add("mongo3:27017")
 ```
 
 Verify the replica set
-```
+```javascript
 rs.status()
 ```
 
 Create MongoDB replica set cluster admin
-```
+```javascript
 use admin
 db.createUser({
   user: "clusterAdmin",
@@ -49,7 +49,7 @@ db.createUser({
 ```
 
 Create MongoDB replica set cluster user for read only
-```
+```javascript
 use admin
 db.createUser({
   user: "clusterReadAdmin",
@@ -59,13 +59,14 @@ db.createUser({
 ```
 
 List all users
-```
+```javascript
 use admin
 db.getUsers()
 ```
 
 The connection string for the replica set
-```
-mongodb://clusterAdmin:clusterPass@localhost:27017,localhost:27018,localhost:27019/?replicaSet=rs0
-mongodb://clusterReadAdmin:clusterReadPass@localhost:27017,localhost:27018,localhost:27019/?replicaSet=rs0&readPreference=secondary
+```sh
+mongosh "mongodb://clusterAdmin:clusterPass@localhost:27017,localhost:27018,localhost:27019/?replicaSet=rs0"
+
+mongosh "mongodb://clusterReadAdmin:clusterReadPass@localhost:27017,localhost:27018,localhost:27019/?replicaSet=rs0&readPreference=secondary"
 ```
