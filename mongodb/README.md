@@ -1,3 +1,7 @@
+# MongoDB
+
+## Setup MongoDB Replica Set
+
 Create MongoDB keyfile
 ```sh
 openssl rand -base64 756 > mongodb-keyfile
@@ -70,3 +74,36 @@ mongosh "mongodb://clusterAdmin:clusterPass@localhost:27017,localhost:27018,loca
 
 mongosh "mongodb://clusterReadAdmin:clusterReadPass@localhost:27017,localhost:27018,localhost:27019/?replicaSet=rs0&readPreference=secondary"
 ```
+
+## Problems
+### Warning: vm.max_map_count is too low
+
+Check current setting on the host
+```sh
+cat /proc/sys/vm/max_map_count
+```
+Update the setting on the host ( `262144` is the recommended value )
+```sh
+sudo nano /etc/sysctl.conf
+# Add or update: vm.max_map_count= 262144
+sudo sysctl -p
+```
+Restart the docker service
+```sh
+sudo systemctl restart docker
+```
+Check the setting on the container
+```sh
+cat /proc/sys/vm/max_map_count
+```
+If the warning still persists, update the soft and hard limti of nofile
+```yaml
+services:
+  mongo:
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 1048576 
+    # ...
+```
+Reference: https://www.mongodb.com/community/forums/t/mongodb-docker-vm-max-map-count-is-too-low-even-if-set-to-524288/280470/1
